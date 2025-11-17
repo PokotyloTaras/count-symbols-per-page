@@ -1,5 +1,4 @@
 const fs = require('fs');
-const SYMBOLS_PER_PAGE = 120 * 80;
 
 const data = fs.readFileSync(
     'paranesi.txt',
@@ -9,25 +8,19 @@ const data = fs.readFileSync(
     }
 );
 
-function countPages(symbolsInBook, symbolsOnPage){
-    if(typeof symbolsInBook !== `number` || typeof symbolsOnPage !== `number`){
-        return 0
-    }
-            
-    if(symbolsOnPage == 0 || symbolsOnPage == null){
-        return 0  
-    }
+const counters = {};
 
-    return Math.ceil(symbolsInBook/Math.abs(symbolsOnPage))    
+for (let i = 0; i < data.length; i++) {
+    if (counters[data[i]] === undefined) {
+        counters[data[i]] = 0
+    }
+    
+    counters[data[i]] += 1;
 }
 
-function getPage(book, pageNumber) {
-    console.log(book.slice(SYMBOLS_PER_PAGE * (pageNumber - 1), SYMBOLS_PER_PAGE * pageNumber))
-//    return // page text
-}
+const entries = Object.entries(counters);
+const sortedEntries = entries.sort((a, b) => b[1] - a[1]);
 
-
-const pagesCount = countPages(data.length, SYMBOLS_PER_PAGE)
-console.log(pagesCount);
-const pageText = getPage(data, 1);
-console.log(pageText)
+console.log("Not sorted:", counters);
+console.log("Sorted:");
+console.table(sortedEntries);
